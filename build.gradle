@@ -1,0 +1,103 @@
+group 'com.gingkoo'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'groovy'
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+//添加maven仓库
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    //编译期所需依赖
+    compile 'org.codehaus.groovy:groovy-all:2.3.11'
+    //测试期所需依赖
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+/**
+ * 发布jar包
+ */
+//uploadArchives {
+//    repositories {
+//        flatDir {
+//            dirs 'repos'
+//        }
+//    }
+//}
+/**
+ * 默认执行的任务
+ */
+defaultTasks 'task0', 'task1'
+/**
+ *执行名为hello的task的command:  gradle -q hello
+ * -q用来控制gradle的日志级别，只输出我们需要的内容"hello world"
+ */
+task hello << {
+    ext.myProperty = "myValue"
+    //    println "hello world"
+}
+
+/**
+ * 常用函数
+ */
+task upper << {
+    String some = "My_Name"
+    println "original: " + some
+    println "Upper Case: " + some.toUpperCase()
+}
+
+/**
+ * 循环结构
+ */
+task count << {
+    4.times {
+        println "$it "
+    }
+}
+
+/**
+ * task依赖，intro任务依赖hello任务执行
+ */
+task intro(dependsOn: hello) << {
+    println "first hello task"
+}
+
+/**
+ * 动态创建task，循环下标索引从0开始
+ */
+4.times {
+    counter ->
+        task "task$counter" << {
+            println "task num counter$counter"
+        }
+}
+/**
+ * 指定依赖
+ */
+task0.dependsOn task1,task2
+
+hello.doFirst {
+    println "first hello"
+}
+
+hello.doLast {
+    println "last hello"
+}
+
+/**
+ * task.doFirst和doLast是在任务开头和结尾添加行为，<<是doLast的简写方式
+ */
+hello << {
+
+}
+
+task printTaskProp << {
+    print hello.myProperty
+}
+
+
+
